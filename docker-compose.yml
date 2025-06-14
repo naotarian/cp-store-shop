@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  # Next.js App
+  app:
+    build:
+      context: ./src
+      dockerfile: ../docker/Dockerfile
+    container_name: cp-store-shop-app
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./src:/home/node/app
+      - cp-store-node_modules:/home/node/app/node_modules:rw,777
+    networks:
+      - cp-store-shop-network
+
+volumes:
+  cp-store-node_modules:
+
+networks:
+  cp-store-shop-network:
+    driver: bridge 
