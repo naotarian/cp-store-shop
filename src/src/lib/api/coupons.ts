@@ -7,7 +7,8 @@ import type {
   CreateCouponFormData,
   CreateCouponResponse,
   UpdateCouponFormData,
-  UpdateCouponResponse
+  UpdateCouponResponse,
+  AcquisitionNotificationsResponse
 } from '@/types/coupon'
 
 /**
@@ -178,6 +179,72 @@ export async function updateCoupon(id: string, data: UpdateCouponFormData) {
       body: JSON.stringify(data),
     })
     return await processApiResponse<UpdateCouponResponse>(response)
+  } catch (error) {
+    return handleApiError(error)
+  }
+}
+
+/**
+ * クーポン取得通知一覧を取得（全ての通知）
+ */
+export async function getAcquisitionNotifications() {
+  try {
+    const response = await authenticatedFetch('/coupons/acquisition-notifications')
+    return await processApiResponse<AcquisitionNotificationsResponse>(response)
+  } catch (error) {
+    return handleApiError(error)
+  }
+}
+
+/**
+ * 未読のクーポン取得通知のみを取得（バナー表示用）
+ */
+export async function getUnreadNotifications() {
+  try {
+    const response = await authenticatedFetch('/coupons/unread-notifications')
+    return await processApiResponse<AcquisitionNotificationsResponse>(response)
+  } catch (error) {
+    return handleApiError(error)
+  }
+}
+
+/**
+ * 取得通知を既読にする
+ */
+export async function markNotificationAsRead(notificationId: string) {
+  try {
+    const response = await authenticatedFetch(`/coupons/acquisition-notifications/${notificationId}/read`, {
+      method: 'POST',
+    })
+    return await processApiResponse(response)
+  } catch (error) {
+    return handleApiError(error)
+  }
+}
+
+/**
+ * 全ての取得通知を既読にする
+ */
+export async function markAllNotificationsAsRead() {
+  try {
+    const response = await authenticatedFetch('/coupons/acquisition-notifications/read-all', {
+      method: 'POST',
+    })
+    return await processApiResponse(response)
+  } catch (error) {
+    return handleApiError(error)
+  }
+}
+
+/**
+ * 通知をバナー表示済みにする
+ */
+export async function markBannerShown(notificationId: string) {
+  try {
+    const response = await authenticatedFetch(`/coupons/acquisition-notifications/${notificationId}/banner-shown`, {
+      method: 'POST',
+    })
+    return await processApiResponse(response)
   } catch (error) {
     return handleApiError(error)
   }

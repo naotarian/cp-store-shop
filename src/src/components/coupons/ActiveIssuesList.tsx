@@ -15,6 +15,7 @@ import {
 import { ToastContainer, useToast } from '@/components/ui/toast'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { getActiveCouponIssues, stopCouponIssue } from '@/lib/api/coupons'
+import { API_REFRESH_INTERVALS } from '@/lib/constants/intervals'
 import type { CouponIssue } from '@/types/coupon'
 import { 
   Play, 
@@ -37,8 +38,8 @@ export function ActiveIssuesList() {
 
   useEffect(() => {
     fetchActiveIssues()
-    // 30秒ごとに更新（リアルタイム性のため）
-    const interval = setInterval(fetchActiveIssues, 30000)
+    // 定期的に更新
+    const interval = setInterval(fetchActiveIssues, API_REFRESH_INTERVALS.ACTIVE_ISSUES)
     return () => clearInterval(interval)
   }, [])
 

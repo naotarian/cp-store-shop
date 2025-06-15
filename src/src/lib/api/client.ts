@@ -2,7 +2,7 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL!
 
 // 認証トークン取得をインポート
-import { getAuthToken } from './auth/storage'
+import { getAuthToken, removeAuthToken, removeUserData } from './auth/storage'
 
 // 認証付きfetch関数
 export async function authenticatedFetch(endpoint: string, options: RequestInit = {}) {
@@ -23,7 +23,20 @@ export async function authenticatedFetch(endpoint: string, options: RequestInit 
   }
 
   const url = `${API_BASE_URL}${endpoint}`
-  return fetch(url, config)
+  const response = await fetch(url, config)
+  
+  // 401エラー（認証エラー）の場合はログイン画面にリダイレクト
+  if (response.status === 401) {
+    // トークンをクリア
+    removeAuthToken()
+    removeUserData()
+    // ログイン画面にリダイレクト
+    if (typeof window !== 'undefined') {
+      window.location.href = '/login'
+    }
+  }
+  
+  return response
 }
 
 // 通常のAPIリクエスト用のヘルパー関数

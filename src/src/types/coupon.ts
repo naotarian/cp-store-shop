@@ -89,6 +89,37 @@ export interface CouponAcquisition {
   time_until_expiry: string
 }
 
+// 取得通知用の型定義
+export interface CouponAcquisitionNotification {
+  id: string
+  coupon_issue_id: string
+  user_id: string
+  user_name: string
+  user_avatar?: string
+  acquired_at: string
+  is_read: boolean
+  // リレーション
+  coupon_issue: {
+    id: string
+    issue_type: IssueType
+    status: CouponStatus
+    coupon: {
+      id: string
+      title: string
+      description?: string
+    }
+  }
+}
+
+// 取得通知のAPI レスポンス型
+export interface AcquisitionNotificationsResponse {
+  status: 'success' | 'error'
+  data: {
+    notifications: CouponAcquisitionNotification[]
+    unread_count: number
+  }
+}
+
 // API レスポンス型
 export interface CouponsResponse {
   status: 'success' | 'error'
